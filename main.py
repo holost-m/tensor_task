@@ -1,8 +1,8 @@
 from functools import reduce
-import time
 from typing import Iterable
 
-file_in_name: str = 'e.in.txt'
+
+file_in_name: str = 'e.in3.txt'
 file_out_name: str = 'e.out.txt'
 
 def make_intersection_set(args: Iterable[int]) -> set:
@@ -11,9 +11,9 @@ def make_intersection_set(args: Iterable[int]) -> set:
         в результате пересечения множеств,
         полученных из элементов коллекции
     """
-    x = reduce(lambda x, y: set(x).intersection(y), args)
+    res = reduce(lambda x, y: set(x).intersection(y), args)
 
-    return x
+    return res
 
 def find_divisors(number: int, args: Iterable[int]) -> int:
     """
@@ -72,6 +72,25 @@ def get_dct_diff(dct_indexes: dict[int, list]) -> dict:
     return dct_diff
 
 
+def get_dct_diff_from_list(lst_numbers: list[int]) -> dict:
+    """
+    Из списка исходных чисел lst_numbers формируется словарь,
+    dct_diff, где ключами будут являтся
+    встречающиеся в последовательности числа,
+    а значениями списки разностей индексов этого числа с первым индексом
+    """
+    dct_diff: dict[int, list] = {}
+    for i in range(len(lst_numbers) - 1):
+        if lst_numbers[i] not in dct_diff:
+            dct_diff[lst_numbers[i]] = [i]
+        else:
+            diff: int = i - dct_diff[lst_numbers[i]][0]
+            dct_diff[lst_numbers[i]].append(diff)
+    print(dct_diff)
+    return dct_diff
+
+
+
 def main() -> None:
     # чтение из файла
     with open(file_in_name, 'r', encoding='utf-8') as file:
@@ -80,12 +99,11 @@ def main() -> None:
         length: int = len(lst_numbers) - 1  # Длинна последовательности чисел
 
     # основные операции
-    dct_indexes: dict[int, list] = get_dct_indexes(lst_numbers)
-    if len(dct_indexes) == 1:
+    dct_diff: dict[int, list] = get_dct_diff_from_list(lst_numbers)
+
+    if len(dct_diff) == 1:
         result: str = '1'
     else:
-
-        dct_diff: dict[int, list] = get_dct_diff(dct_indexes)
         total_set: set = make_intersection_set(dct_diff.values())
         total_set.add(length)
 
